@@ -1,0 +1,46 @@
+version: "3.7"
+
+networks:
+  overlay:
+
+volumes:
+  postgres-data:
+
+services:
+  traefik:
+    image: traefik:v2.2
+    networks:
+      - overlay
+    volumes:
+      - ./configs/traefik.yml:/etc/traefik/traefik.yaml
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+
+  app:
+    build:
+      context: app/
+    networks:
+      - overlay
+    volumes:
+      - ./app:/app/
+    env_file:
+      - secrets/app.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.entrypoints=http"
+      - "traefik.http.routers.app.rule=Host(`127.0.0.1`)"
+      - "traefik.http.services.app.loadbalancer.server.port=8000"
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+  postgres:
+    image: postgres:12-alpine
+    networks:
+      - overlay
+    env_file:
+      - secrets/postgres.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: always
