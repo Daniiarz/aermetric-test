@@ -11,7 +11,7 @@ class ChronicleView(APIView):
     """
 
     def get(self, request, *args, **kwargs):
-        chronicle = services.get_chronicle(kwargs['id'])
-
+        unique_id = kwargs['id']
+        chronicle = services.get_chronicle(unique_id)
         data = serializers.ChronicleSerializer(chronicle).data
         return Response(data=data, status=status.HTTP_200_OK)
