@@ -15,7 +15,7 @@ class Chronicle(models.Model):
     min_timestamp = models.DateTimeField()
     max_timestamp = models.DateTimeField()
     status = models.CharField(max_length=15, choices=_status, default=OPEN)
-    unique_id = models.CharField(max_length=50, unique=True, db_index=True)
+    unique_id = models.CharField(max_length=50)
     aircraft = models.CharField(max_length=50)
 
     class Meta:
@@ -29,9 +29,9 @@ class Event(models.Model):
     """
     Events that happen on a airplane
     """
-    datetime = models.DateTimeField()
-    aircraft = models.CharField()
-    unique_id = models.CharField(max_length=50, unique=True, db_index=True)
+    datetime = models.DateTimeField(db_index=True)
+    aircraft = models.CharField(max_length=50)
+    unique_id = models.CharField(max_length=50)
 
     class Meta:
         db_table = "event"

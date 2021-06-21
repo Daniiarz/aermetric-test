@@ -34,9 +34,12 @@ services:
       - "traefik.http.routers.app.rule=Host(`127.0.0.1`)"
       - "traefik.http.services.app.loadbalancer.server.port=8000"
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    restart: always
 
   postgres:
     image: postgres:12-alpine
+    ports:
+      - 5432:5432
     networks:
       - overlay
     env_file:
