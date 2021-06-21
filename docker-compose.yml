@@ -33,7 +33,7 @@ services:
       - "traefik.http.routers.app.entrypoints=http"
       - "traefik.http.routers.app.rule=Host(`127.0.0.1`)"
       - "traefik.http.services.app.loadbalancer.server.port=8000"
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python manage.py initial_data && python manage.py runserver 0.0.0.0:8000"
     restart: always
 
   postgres:
